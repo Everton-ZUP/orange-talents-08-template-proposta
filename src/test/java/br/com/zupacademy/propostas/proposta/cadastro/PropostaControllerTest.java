@@ -6,7 +6,10 @@ import br.com.zupacademy.propostas.proposta.avaliacao.ApiAvaliacaoFinanceira;
 import br.com.zupacademy.propostas.proposta.avaliacao.EnumAvaliacaoFinanceiraResultado;
 import br.com.zupacademy.propostas.proposta.avaliacao.ResponseAvaliacaoFinanceira;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.source.tree.ModuleTree;
 import feign.FeignException;
+import feign.Request;
+import feign.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,12 +23,16 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.util.concurrent.atomic.AtomicReference;
+import java.net.http.HttpHeaders;
+import java.net.http.HttpRequest;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -128,14 +135,17 @@ class PropostaControllerTest {
         ResponseAvaliacaoFinanceira responseAvaliacaoFinanceira = new ResponseAvaliacaoFinanceira();
         responseAvaliacaoFinanceira.setResultadoSolicitacao(EnumAvaliacaoFinanceiraResultado.COM_RESTRICAO);
 
-        Mockito.when(apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(Mockito.any()))
-                .thenReturn(responseAvaliacaoFinanceira)
-                .thenThrow(FeignException.class);
+        Mockito.doThrow(
+                new FeignException.UnprocessableEntity("",
+                        Request.create(Request.HttpMethod.POST,"vazia",Map.of("", List.of("")),
+                                new ObjectMapper().writeValueAsBytes(""),null,null),
+                        new ObjectMapper().writeValueAsString(responseAvaliacaoFinanceira).getBytes(StandardCharsets.UTF_8)))
+                        .when(apiAvaliacaoFinanceira).fazerAvaliacaoFinaceira(Mockito.any());
+
 
         mockMvc.perform(MockMvcRequestBuilders.post("/propostas")
                         .content(new ObjectMapper().writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
-
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.header().exists("Location"))
                 .andExpect(MockMvcResultMatchers.redirectedUrlPattern("**/propostas/*"));
