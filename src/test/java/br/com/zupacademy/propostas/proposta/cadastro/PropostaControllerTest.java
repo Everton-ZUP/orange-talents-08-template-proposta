@@ -3,6 +3,8 @@ package br.com.zupacademy.propostas.proposta.cadastro;
 import br.com.zupacademy.propostas.proposta.EstadoProposta;
 import br.com.zupacademy.propostas.proposta.PropostaRepository;
 import br.com.zupacademy.propostas.proposta.avaliacao.ApiAvaliacaoFinanceira;
+import br.com.zupacademy.propostas.proposta.avaliacao.EnumAvaliacaoFinanceiraResultado;
+import br.com.zupacademy.propostas.proposta.avaliacao.ResponseAvaliacaoFinanceira;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import org.junit.jupiter.api.Assertions;
@@ -43,8 +45,11 @@ class PropostaControllerTest {
     void cadastrarPropostaComSucesso() throws Exception {
         PropostaRequest request = new PropostaRequest("298.625.190-02",
                 "teste@zup.com","Teste","Rua do Teste", new BigDecimal(1000));
+        ResponseAvaliacaoFinanceira responseAvaliacaoFinanceira = new ResponseAvaliacaoFinanceira();
+        responseAvaliacaoFinanceira.setResultadoSolicitacao(EnumAvaliacaoFinanceiraResultado.SEM_RESTRICAO);
 
-        Mockito.when(apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(Mockito.any())).thenReturn("ok");
+        Mockito.when(apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(Mockito.any())).thenReturn(responseAvaliacaoFinanceira);
+
 
         mockMvc.perform(MockMvcRequestBuilders.post("/propostas")
                     .content(new ObjectMapper().writeValueAsString(request))
@@ -105,8 +110,12 @@ class PropostaControllerTest {
     void deveriaSalvarAPropostaComoNaoElegivel() throws Exception {
         PropostaRequest request = new PropostaRequest("298.625.190-02",
                 "teste@zup.com","Teste","Rua do Teste", new BigDecimal(1000));
+        ResponseAvaliacaoFinanceira responseAvaliacaoFinanceira = new ResponseAvaliacaoFinanceira();
+        responseAvaliacaoFinanceira.setResultadoSolicitacao(EnumAvaliacaoFinanceiraResultado.COM_RESTRICAO);
 
-        Mockito.when(apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(Mockito.any())).thenThrow(FeignException.class);
+        Mockito.when(apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(Mockito.any()))
+                .thenReturn(responseAvaliacaoFinanceira)
+                .thenThrow(FeignException.class);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/propostas")
                         .content(new ObjectMapper().writeValueAsString(request))

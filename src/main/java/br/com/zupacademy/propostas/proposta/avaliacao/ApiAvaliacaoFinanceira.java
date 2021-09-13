@@ -10,6 +10,6 @@ import java.util.HashMap;
 public interface ApiAvaliacaoFinanceira {
 
     @PostMapping
-    String fazerAvaliacaoFinaceira(@RequestBody HashMap<String,String> request);
+    ResponseAvaliacaoFinanceira fazerAvaliacaoFinaceira(@RequestBody HashMap<String,String> request);
 
 }

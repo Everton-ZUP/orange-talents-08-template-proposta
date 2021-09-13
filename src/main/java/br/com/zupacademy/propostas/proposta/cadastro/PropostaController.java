@@ -4,6 +4,9 @@ import br.com.zupacademy.propostas.proposta.EstadoProposta;
 import br.com.zupacademy.propostas.proposta.Proposta;
 import br.com.zupacademy.propostas.proposta.PropostaRepository;
 import br.com.zupacademy.propostas.proposta.avaliacao.ApiAvaliacaoFinanceira;
+import br.com.zupacademy.propostas.proposta.avaliacao.ResponseAvaliacaoFinanceira;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +30,7 @@ public class PropostaController {
     private ApiAvaliacaoFinanceira apiAvaliacaoFinanceira;
 
     @PostMapping @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> cadastrarProposta(@RequestBody @Valid PropostaRequest formulario, UriComponentsBuilder uri){
+    public ResponseEntity<?> cadastrarProposta(@RequestBody @Valid PropostaRequest formulario, UriComponentsBuilder uri) throws JsonProcessingException {
         Proposta proposta = formulario.toModel();
 
         proposta = propostaRepository.save(proposta);
@@ -38,10 +41,12 @@ public class PropostaController {
         formApi.put("idProposta",proposta.getId().toString());
 
         try {
-            String retorno = apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(formApi);
-            proposta.setEstado(EstadoProposta.ELEGIVEL);
+            ResponseAvaliacaoFinanceira retorno = apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(formApi);
+            proposta.setEstado(retorno.getStatusProposta());
         }catch (FeignException feignException){
-            proposta.setEstado(EstadoProposta.NAO_ELEGIVEL);
+            ObjectMapper objectMapper = new ObjectMapper();
+            ResponseAvaliacaoFinanceira retorno = objectMapper.readValue(feignException.contentUTF8(),ResponseAvaliacaoFinanceira.class);
+            proposta.setEstado(retorno.getStatusProposta());
         }
 
 
