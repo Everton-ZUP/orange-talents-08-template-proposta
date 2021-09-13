@@ -2,10 +2,7 @@ package br.com.zupacademy.propostas.proposta;
 
 import br.com.zupacademy.propostas.validation.CpfOuCnpj;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -18,7 +15,7 @@ public class Proposta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CpfOuCnpj @NotBlank
+    @CpfOuCnpj @NotBlank @Column(unique = true)
     private String documento;
     @Email @NotBlank
     private String email;
@@ -28,6 +25,9 @@ public class Proposta {
     private String endereco;
     @NotNull @Positive
     private BigDecimal salario;
+
+    @Enumerated(EnumType.STRING)
+    private EstadoProposta estado;
 
     public Proposta(String documento, String email, String nome, String endereco, BigDecimal salario) {
         this.documento = documento;
@@ -61,7 +61,15 @@ public class Proposta {
         return endereco;
     }
 
+    public EstadoProposta getEstado() {
+        return estado;
+    }
+
     public BigDecimal getSalario() {
         return salario;
+    }
+
+    public void setEstado(EstadoProposta estado) {
+        this.estado = estado;
     }
 }

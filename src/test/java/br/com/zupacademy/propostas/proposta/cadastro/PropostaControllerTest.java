@@ -1,15 +1,19 @@
 package br.com.zupacademy.propostas.proposta.cadastro;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import br.com.zupacademy.propostas.proposta.EstadoProposta;
+import br.com.zupacademy.propostas.proposta.PropostaRepository;
+import br.com.zupacademy.propostas.proposta.avaliacao.ApiAvaliacaoFinanceira;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.FeignException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,17 +33,28 @@ class PropostaControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private PropostaRepository propostaRepository;
+
+    @MockBean
+    private ApiAvaliacaoFinanceira apiAvaliacaoFinanceira;
+
     @Test
     void cadastrarPropostaComSucesso() throws Exception {
         PropostaRequest request = new PropostaRequest("298.625.190-02",
                 "teste@zup.com","Teste","Rua do Teste", new BigDecimal(1000));
 
+        Mockito.when(apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(Mockito.any())).thenReturn("ok");
+
         mockMvc.perform(MockMvcRequestBuilders.post("/propostas")
                     .content(new ObjectMapper().writeValueAsString(request))
                     .contentType(MediaType.APPLICATION_JSON))
+
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.header().exists("Location"))
                 .andExpect(MockMvcResultMatchers.redirectedUrlPattern("**/propostas/*"));
+
+        Assertions.assertTrue(propostaRepository.findById(1l).get().getEstado().equals(EstadoProposta.ELEGIVEL));
     }
 
     @ParameterizedTest
@@ -84,5 +99,23 @@ class PropostaControllerTest {
         mockMvc.perform(builder).andExpect(MockMvcResultMatchers.status().isCreated());
         mockMvc.perform(builder).andExpect(MockMvcResultMatchers.status().isUnprocessableEntity());
 
+    }
+
+    @Test
+    void deveriaSalvarAPropostaComoNaoElegivel() throws Exception {
+        PropostaRequest request = new PropostaRequest("298.625.190-02",
+                "teste@zup.com","Teste","Rua do Teste", new BigDecimal(1000));
+
+        Mockito.when(apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(Mockito.any())).thenThrow(FeignException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/propostas")
+                        .content(new ObjectMapper().writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.header().exists("Location"))
+                .andExpect(MockMvcResultMatchers.redirectedUrlPattern("**/propostas/*"));
+
+        Assertions.assertTrue(propostaRepository.findById(1l).get().getEstado().equals(EstadoProposta.NAO_ELEGIVEL));
     }
 }

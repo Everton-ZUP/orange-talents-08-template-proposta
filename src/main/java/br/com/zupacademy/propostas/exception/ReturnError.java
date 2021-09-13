@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ReturnError {
+
     private List<String> global = new ArrayList<>();
     private List<HashMap> fields = new ArrayList<>();
 
