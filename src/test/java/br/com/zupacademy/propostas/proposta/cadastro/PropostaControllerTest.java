@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.concurrent.atomic.AtomicReference;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -41,15 +42,15 @@ class PropostaControllerTest {
     @MockBean
     private ApiAvaliacaoFinanceira apiAvaliacaoFinanceira;
 
+
     @Test
     void cadastrarPropostaComSucesso() throws Exception {
         PropostaRequest request = new PropostaRequest("298.625.190-02",
                 "teste@zup.com","Teste","Rua do Teste", new BigDecimal(1000));
+
         ResponseAvaliacaoFinanceira responseAvaliacaoFinanceira = new ResponseAvaliacaoFinanceira();
         responseAvaliacaoFinanceira.setResultadoSolicitacao(EnumAvaliacaoFinanceiraResultado.SEM_RESTRICAO);
-
         Mockito.when(apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(Mockito.any())).thenReturn(responseAvaliacaoFinanceira);
-
 
         mockMvc.perform(MockMvcRequestBuilders.post("/propostas")
                     .content(new ObjectMapper().writeValueAsString(request))
@@ -59,7 +60,7 @@ class PropostaControllerTest {
                 .andExpect(MockMvcResultMatchers.header().exists("Location"))
                 .andExpect(MockMvcResultMatchers.redirectedUrlPattern("**/propostas/*"));
 
-        Assertions.assertTrue(propostaRepository.findById(1l).get().getEstado().equals(EstadoProposta.ELEGIVEL));
+        Assertions.assertTrue(propostaRepository.findByDocumento("298.625.190-02").getEstado().equals(EstadoProposta.ELEGIVEL));
     }
 
     @ParameterizedTest
@@ -69,6 +70,11 @@ class PropostaControllerTest {
             "298.625.190-02,teste@zup.com,teste,"})
     void deveriaDarErroAoInserirPropostaComAlgumCampoVazio(String documento,String email, String nome, String endereco ) throws Exception {
         PropostaRequest request = new PropostaRequest(documento,email,nome,endereco, new BigDecimal(1000));
+
+        ResponseAvaliacaoFinanceira responseAvaliacaoFinanceira = new ResponseAvaliacaoFinanceira();
+        responseAvaliacaoFinanceira.setResultadoSolicitacao(EnumAvaliacaoFinanceiraResultado.SEM_RESTRICAO);
+        Mockito.when(apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(Mockito.any())).thenReturn(responseAvaliacaoFinanceira);
+
         mockMvc.perform(MockMvcRequestBuilders.post("/propostas")
                         .content(new ObjectMapper().writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -80,6 +86,10 @@ class PropostaControllerTest {
     void deveriaDarErroAoInserirPropostaComSalarioNegativo(BigDecimal salario, Boolean resultado) throws Exception {
         PropostaRequest request = new PropostaRequest("298.625.190-02",
                 "teste@zup.com","Teste","Rua do Teste", salario);
+
+        ResponseAvaliacaoFinanceira responseAvaliacaoFinanceira = new ResponseAvaliacaoFinanceira();
+        responseAvaliacaoFinanceira.setResultadoSolicitacao(EnumAvaliacaoFinanceiraResultado.SEM_RESTRICAO);
+        Mockito.when(apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(Mockito.any())).thenReturn(responseAvaliacaoFinanceira);
 
         RequestBuilder builder = MockMvcRequestBuilders.post("/propostas")
                         .content(new ObjectMapper().writeValueAsString(request))
@@ -97,6 +107,10 @@ class PropostaControllerTest {
         PropostaRequest request = new PropostaRequest("298.625.190-02",
                 "teste@zup.com","Teste","Rua do Teste", new BigDecimal(1000));
 
+        ResponseAvaliacaoFinanceira responseAvaliacaoFinanceira = new ResponseAvaliacaoFinanceira();
+        responseAvaliacaoFinanceira.setResultadoSolicitacao(EnumAvaliacaoFinanceiraResultado.SEM_RESTRICAO);
+        Mockito.when(apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(Mockito.any())).thenReturn(responseAvaliacaoFinanceira);
+
         RequestBuilder builder = MockMvcRequestBuilders.post("/propostas")
                 .content(new ObjectMapper().writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON);
@@ -110,6 +124,7 @@ class PropostaControllerTest {
     void deveriaSalvarAPropostaComoNaoElegivel() throws Exception {
         PropostaRequest request = new PropostaRequest("298.625.190-02",
                 "teste@zup.com","Teste","Rua do Teste", new BigDecimal(1000));
+
         ResponseAvaliacaoFinanceira responseAvaliacaoFinanceira = new ResponseAvaliacaoFinanceira();
         responseAvaliacaoFinanceira.setResultadoSolicitacao(EnumAvaliacaoFinanceiraResultado.COM_RESTRICAO);
 
@@ -125,6 +140,6 @@ class PropostaControllerTest {
                 .andExpect(MockMvcResultMatchers.header().exists("Location"))
                 .andExpect(MockMvcResultMatchers.redirectedUrlPattern("**/propostas/*"));
 
-        Assertions.assertTrue(propostaRepository.findById(1l).get().getEstado().equals(EstadoProposta.NAO_ELEGIVEL));
+        Assertions.assertTrue(propostaRepository.findByDocumento("298.625.190-02").getEstado().equals(EstadoProposta.NAO_ELEGIVEL));
     }
 }
