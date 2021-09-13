@@ -71,4 +71,18 @@ class PropostaControllerTest {
             mockMvc.perform(builder).andExpect(MockMvcResultMatchers.status().isBadRequest());
         }
     }
+
+    @Test
+    void deveriaDarErroAoCadastrarPropostaComDocumentoDuplicado() throws Exception {
+        PropostaRequest request = new PropostaRequest("298.625.190-02",
+                "teste@zup.com","Teste","Rua do Teste", new BigDecimal(1000));
+
+        RequestBuilder builder = MockMvcRequestBuilders.post("/propostas")
+                .content(new ObjectMapper().writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(builder).andExpect(MockMvcResultMatchers.status().isCreated());
+        mockMvc.perform(builder).andExpect(MockMvcResultMatchers.status().isUnprocessableEntity());
+
+    }
 }

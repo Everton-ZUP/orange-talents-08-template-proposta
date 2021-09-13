@@ -2,6 +2,7 @@ package br.com.zupacademy.propostas.proposta.cadastro;
 
 import br.com.zupacademy.propostas.proposta.Proposta;
 import br.com.zupacademy.propostas.validation.CpfOuCnpj;
+import br.com.zupacademy.propostas.validation.UniqueValue;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -11,7 +12,9 @@ import java.math.BigDecimal;
 
 public class PropostaRequest {
 
-    @NotBlank @CpfOuCnpj
+    @NotBlank
+    @CpfOuCnpj
+    @UniqueValue(classe = Proposta.class, campo = "documento")
     private String documento;
     @Email @NotBlank
     private String email;

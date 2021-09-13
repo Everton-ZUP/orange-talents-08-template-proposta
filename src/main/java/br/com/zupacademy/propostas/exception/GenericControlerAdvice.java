@@ -29,6 +29,12 @@ public class GenericControlerAdvice {
         return erros;
     }
 
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(ErroRegraDeNegocio.class)
+    public ReturnError validacaoRegraDeNegocio(ErroRegraDeNegocio erro){
+        return erro.getErroDeRetorno();
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NotReadablePropertyException.class)
     public ReturnError validacao2(NotReadablePropertyException exception){
