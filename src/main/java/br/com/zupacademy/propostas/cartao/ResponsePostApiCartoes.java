@@ -1,5 +1,9 @@
 package br.com.zupacademy.propostas.cartao;
 
+import br.com.zupacademy.propostas.cartao.vinculado.Vencimento;
+import br.com.zupacademy.propostas.proposta.Proposta;
+import br.com.zupacademy.propostas.proposta.PropostaRepository;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -35,5 +39,15 @@ public class ResponsePostApiCartoes {
         this.parcelas = parcelas;
         this.renegociacao = renegociacao;
         this.vencimento = vencimento;
+    }
+
+    public Cartao toCartao() {
+        Vencimento vencimento = null;
+        if (!this.vencimento.isEmpty() || this.vencimento != null ){
+             vencimento = new Vencimento(this.vencimento.get("id").toString(),
+                    Integer.parseInt(this.vencimento.get("dia").toString()),
+                    LocalDateTime.parse(this.vencimento.get("dataDeCriacao").toString()));
+        }
+        return new Cartao(id,emitidoEm,titular,null,limite,bloqueios,avisos,carteiras,parcelas,renegociacao,vencimento);
     }
 }

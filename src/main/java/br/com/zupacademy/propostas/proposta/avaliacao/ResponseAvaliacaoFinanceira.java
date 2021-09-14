@@ -16,6 +16,16 @@ public class ResponseAvaliacaoFinanceira {
     @JsonProperty
     private String idProposta;
 
+    public ResponseAvaliacaoFinanceira(String documento, String nome, EnumAvaliacaoFinanceiraResultado resultadoSolicitacao, String idProposta) {
+        this.documento = documento;
+        this.nome = nome;
+        this.resultadoSolicitacao = resultadoSolicitacao;
+        this.idProposta = idProposta;
+    }
+
+    public ResponseAvaliacaoFinanceira() {
+    }
+
     public String getDocumento() {
         return documento;
     }

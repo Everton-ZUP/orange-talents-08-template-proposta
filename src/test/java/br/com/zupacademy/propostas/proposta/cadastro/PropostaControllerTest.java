@@ -1,5 +1,6 @@
 package br.com.zupacademy.propostas.proposta.cadastro;
 
+import br.com.zupacademy.propostas.cartao.ApiCartoes;
 import br.com.zupacademy.propostas.proposta.EstadoProposta;
 import br.com.zupacademy.propostas.proposta.PropostaRepository;
 import br.com.zupacademy.propostas.proposta.avaliacao.ApiAvaliacaoFinanceira;
@@ -48,6 +49,9 @@ class PropostaControllerTest {
 
     @MockBean
     private ApiAvaliacaoFinanceira apiAvaliacaoFinanceira;
+
+    @MockBean
+    private ApiCartoes apiCartoes;
 
 
     @Test

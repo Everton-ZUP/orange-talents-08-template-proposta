@@ -44,10 +44,15 @@ public class PropostaController {
         try {
             retorno = apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(formApi);
         }catch (FeignException feignException){
-            retorno = new ObjectMapper().readValue(feignException.contentUTF8(),ResponseAvaliacaoFinanceira.class);
+            if (feignException.contentUTF8().isEmpty()){
+                throw feignException;
+            }else{
+                retorno = new ObjectMapper().readValue(feignException.contentUTF8(),ResponseAvaliacaoFinanceira.class);
+            }
         }
-        proposta.setEstado(retorno.getStatusProposta());
 
+        proposta.setEstado(retorno.getStatusProposta());
+        proposta = propostaRepository.save(proposta);
 
         URI location = uri.path("/propostas/{id}").build(proposta.getId());
         return ResponseEntity.created(location).build();

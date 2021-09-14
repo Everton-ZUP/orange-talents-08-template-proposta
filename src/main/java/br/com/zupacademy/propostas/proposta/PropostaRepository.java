@@ -9,5 +9,7 @@ public interface PropostaRepository extends JpaRepository<Proposta,Long> {
 
    Proposta findByDocumento(String s);
 
-    List<Proposta> findAllByStatusAndCartaoIsNull(EstadoProposta elegivel);
+   List<Proposta> findAllByEstado(EstadoProposta estado);
+
+   List<Proposta> findAllByEstadoAndCartaoIsNull(EstadoProposta estado);
 }

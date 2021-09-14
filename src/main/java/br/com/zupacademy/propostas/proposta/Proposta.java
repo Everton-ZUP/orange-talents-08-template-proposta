@@ -1,5 +1,6 @@
 package br.com.zupacademy.propostas.proposta;
 
+import br.com.zupacademy.propostas.cartao.Cartao;
 import br.com.zupacademy.propostas.validation.CpfOuCnpj;
 
 import javax.persistence.*;
@@ -28,6 +29,10 @@ public class Proposta {
 
     @Enumerated(EnumType.STRING)
     private EstadoProposta estado;
+
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "numero_cartao")
+    private Cartao cartao;
 
     public Proposta(String documento, String email, String nome, String endereco, BigDecimal salario) {
         this.documento = documento;
@@ -71,5 +76,13 @@ public class Proposta {
 
     public void setEstado(EstadoProposta estado) {
         this.estado = estado;
+    }
+
+    public Cartao getCartao() {
+        return cartao;
+    }
+
+    public void setCartao(Cartao cartao) {
+        this.cartao = cartao;
     }
 }
