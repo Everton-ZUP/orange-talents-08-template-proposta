@@ -133,21 +133,7 @@ services:
       VAULT_DEV_ROOT_TOKEN_ID: ee413645-dbe8-4848-afc6-6bb2768ada75
       VAULT_TOKEN: ee413645-dbe8-4848-afc6-6bb2768ada75
       VAULT_ADDR: http://127.0.0.1:8200
-
-  proposta:
-    build:
-      dockerfile: Dockerfile
-      context: .
-    image: proposta
-    ports:
-      - 8080:8080
-    environment:
-      FINANCEIRO_URL: http://analise:9999/api/solicitacao
-      APICARTOES_URL: http://contas:8888/api/cartoes
-      spring.profiles.active: dev
-    depends_on:
-      - analise
-      - contas
+      
 volumes:
   grafana-volume:
   prometheus-volume:

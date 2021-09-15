@@ -34,7 +34,7 @@ import java.util.Map;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@ActiveProfiles("Test")
+@ActiveProfiles("test")
 class PropostaControllerTest {
 
     @Autowired
