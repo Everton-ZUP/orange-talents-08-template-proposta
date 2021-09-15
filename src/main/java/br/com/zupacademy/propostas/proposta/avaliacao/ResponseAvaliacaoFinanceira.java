@@ -1,7 +1,6 @@
 package br.com.zupacademy.propostas.proposta.avaliacao;
 
 import br.com.zupacademy.propostas.proposta.EstadoProposta;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

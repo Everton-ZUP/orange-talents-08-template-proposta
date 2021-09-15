@@ -7,10 +7,8 @@ import br.com.zupacademy.propostas.proposta.avaliacao.ApiAvaliacaoFinanceira;
 import br.com.zupacademy.propostas.proposta.avaliacao.EnumAvaliacaoFinanceiraResultado;
 import br.com.zupacademy.propostas.proposta.avaliacao.ResponseAvaliacaoFinanceira;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.source.tree.ModuleTree;
 import feign.FeignException;
 import feign.Request;
-import feign.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,16 +22,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.net.http.HttpHeaders;
-import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -155,5 +151,28 @@ class PropostaControllerTest {
                 .andExpect(MockMvcResultMatchers.redirectedUrlPattern("**/propostas/*"));
 
         Assertions.assertTrue(propostaRepository.findByDocumento("298.625.190-02").getEstado().equals(EstadoProposta.NAO_ELEGIVEL));
+    }
+
+    @Test
+    void retornarDadosAoBuscarEErroAoBuscarUmIdInvalido() throws Exception {
+        PropostaRequest request = new PropostaRequest("298.625.190-02",
+                "teste@zup.com","Teste","Rua do Teste", new BigDecimal(1000));
+
+        ResponseAvaliacaoFinanceira responseAvaliacaoFinanceira = new ResponseAvaliacaoFinanceira();
+        responseAvaliacaoFinanceira.setResultadoSolicitacao(EnumAvaliacaoFinanceiraResultado.SEM_RESTRICAO);
+        Mockito.when(apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(Mockito.any())).thenReturn(responseAvaliacaoFinanceira);
+
+        String location = mockMvc.perform( MockMvcRequestBuilders.post("/propostas")
+                .content(new ObjectMapper().writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse().getHeader("Location");
+
+
+        mockMvc.perform(MockMvcRequestBuilders.get(location))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("documento").value("298.625.190-02"));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/propostas/10000"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 }

@@ -43,7 +43,7 @@ public class ResponsePostApiCartoes {
 
     public Cartao toCartao() {
         Vencimento vencimento = null;
-        if (!this.vencimento.isEmpty() || this.vencimento != null ){
+        if (!this.vencimento.isEmpty() && this.vencimento != null ){
              vencimento = new Vencimento(this.vencimento.get("id").toString(),
                     Integer.parseInt(this.vencimento.get("dia").toString()),
                     LocalDateTime.parse(this.vencimento.get("dataDeCriacao").toString()));
