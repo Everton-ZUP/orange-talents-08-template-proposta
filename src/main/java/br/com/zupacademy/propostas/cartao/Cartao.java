@@ -1,5 +1,6 @@
 package br.com.zupacademy.propostas.cartao;
 
+import br.com.zupacademy.propostas.biometria.Biometria;
 import br.com.zupacademy.propostas.cartao.vinculado.Vencimento;
 import br.com.zupacademy.propostas.proposta.Proposta;
 
@@ -10,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
-import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 public class Cartao {
@@ -22,6 +22,9 @@ public class Cartao {
 
     @OneToOne(mappedBy = "cartao")
     private Proposta proposta;
+
+    @OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
+    private List<Biometria> biometrias;
 
     private BigDecimal limite;
 
@@ -102,5 +105,13 @@ public class Cartao {
 
     public Vencimento getVencimento() {
         return vencimento;
+    }
+
+    public List<Biometria> getBiometrias() {
+        return biometrias;
+    }
+
+    public void adicionarBiometria(Biometria biometria){
+        this.biometrias.add(biometria);
     }
 }
