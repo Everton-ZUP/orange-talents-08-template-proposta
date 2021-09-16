@@ -13,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import javax.validation.constraints.AssertTrue;
 import java.util.Base64;
 
 @RestController
@@ -35,11 +36,7 @@ public class BiometriaController {
                 new ResponseStatusException(HttpStatus.NOT_FOUND,"cartão não exite")
         );
 
-        try{
-            byte[] bites = Base64.getDecoder().decode(biometria.getFingerPrint());
-        }catch (Exception exception){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"digital inválida");
-        }
+        biometria.validarBiometria();
 
         Biometria bio = biometria.toBiometria(cartao);
         biometriaRepository.save(bio);
