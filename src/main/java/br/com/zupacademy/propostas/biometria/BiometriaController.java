@@ -1,7 +1,6 @@
-package br.com.zupacademy.propostas.biometria.cadastro;
+package br.com.zupacademy.propostas.biometria;
 
-import br.com.zupacademy.propostas.biometria.Biometria;
-import br.com.zupacademy.propostas.biometria.BiometriaRepository;
+import br.com.zupacademy.propostas.biometria.cadastro.RequestBiometria;
 import br.com.zupacademy.propostas.cartao.Cartao;
 import br.com.zupacademy.propostas.cartao.CartaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import javax.validation.constraints.AssertTrue;
-import java.util.Base64;
 
 @RestController
 public class BiometriaController {

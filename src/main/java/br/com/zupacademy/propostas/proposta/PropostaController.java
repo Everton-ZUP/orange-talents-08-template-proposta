@@ -2,8 +2,8 @@ package br.com.zupacademy.propostas.proposta;
 
 import br.com.zupacademy.propostas.proposta.avaliacao.ApiAvaliacaoFinanceira;
 import br.com.zupacademy.propostas.proposta.avaliacao.ResponseAvaliacaoFinanceira;
-import br.com.zupacademy.propostas.proposta.consulta.PropostaConsultaResponse;
 import br.com.zupacademy.propostas.proposta.cadastro.PropostaRequest;
+import br.com.zupacademy.propostas.proposta.consulta.PropostaConsultaResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;

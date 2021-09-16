@@ -1,11 +1,11 @@
-package br.com.zupacademy.propostas.proposta.cadastro;
+package br.com.zupacademy.propostas.proposta;
 
+import br.com.zupacademy.propostas.TestPrincipal;
 import br.com.zupacademy.propostas.cartao.ApiCartoes;
-import br.com.zupacademy.propostas.proposta.EstadoProposta;
-import br.com.zupacademy.propostas.proposta.PropostaRepository;
 import br.com.zupacademy.propostas.proposta.avaliacao.ApiAvaliacaoFinanceira;
 import br.com.zupacademy.propostas.proposta.avaliacao.EnumAvaliacaoFinanceiraResultado;
 import br.com.zupacademy.propostas.proposta.avaliacao.ResponseAvaliacaoFinanceira;
+import br.com.zupacademy.propostas.proposta.cadastro.PropostaRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import feign.Request;
@@ -31,24 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Transactional
-@ActiveProfiles("test")
-class PropostaControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private PropostaRepository propostaRepository;
-
-    @MockBean
-    private ApiAvaliacaoFinanceira apiAvaliacaoFinanceira;
-
-    @MockBean
-    private ApiCartoes apiCartoes;
-
+class PropostaControllerTest extends TestPrincipal {
 
     @Test
     void cadastrarPropostaComSucesso() throws Exception {

@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class Cartao {
     private Proposta proposta;
 
     @OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
-    private List<Biometria> biometrias;
+    private List<Biometria> biometrias = new ArrayList<>();
 
     private BigDecimal limite;
 
