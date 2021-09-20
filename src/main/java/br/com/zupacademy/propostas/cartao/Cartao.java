@@ -22,6 +22,9 @@ public class Cartao {
     private LocalDateTime emitidoEm;
     private String titular;
 
+    @Enumerated(EnumType.STRING)
+    private StatusCartao status;
+
     @OneToOne(mappedBy = "cartao")
     private Proposta proposta;
 
@@ -44,7 +47,7 @@ public class Cartao {
 
     private HashMap<String,Object> renegociacao;
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "vencimento_id")
     private Vencimento vencimento;
 
@@ -126,5 +129,13 @@ public class Cartao {
 
     public void adicionarBiometria(Biometria biometria){
         this.biometrias.add(biometria);
+    }
+
+    public StatusCartao getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusCartao status) {
+        this.status = status;
     }
 }
