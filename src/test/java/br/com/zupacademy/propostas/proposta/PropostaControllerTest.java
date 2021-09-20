@@ -1,8 +1,6 @@
 package br.com.zupacademy.propostas.proposta;
 
 import br.com.zupacademy.propostas.TestPrincipal;
-import br.com.zupacademy.propostas.cartao.ApiCartoes;
-import br.com.zupacademy.propostas.proposta.avaliacao.ApiAvaliacaoFinanceira;
 import br.com.zupacademy.propostas.proposta.avaliacao.EnumAvaliacaoFinanceiraResultado;
 import br.com.zupacademy.propostas.proposta.avaliacao.ResponseAvaliacaoFinanceira;
 import br.com.zupacademy.propostas.proposta.cadastro.PropostaRequest;
@@ -14,18 +12,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.List;

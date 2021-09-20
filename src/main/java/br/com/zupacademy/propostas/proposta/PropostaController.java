@@ -10,12 +10,16 @@ import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 @RestController
@@ -30,6 +34,7 @@ public class PropostaController {
 
     @GetMapping("/{id}") @ResponseStatus(HttpStatus.OK)
     public PropostaConsultaResponse buscarProposta(@PathVariable("id") Long idProposta){
+
         Proposta proposta = propostaRepository.findById(idProposta).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND,"Proposta não encontrada"));
         return new PropostaConsultaResponse(proposta);
@@ -37,6 +42,7 @@ public class PropostaController {
 
     @PostMapping @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> cadastrarProposta(@RequestBody @Valid PropostaRequest formulario, UriComponentsBuilder uri) throws JsonProcessingException {
+
         Proposta proposta = formulario.toModel();
 
         proposta = propostaRepository.save(proposta);

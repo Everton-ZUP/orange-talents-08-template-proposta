@@ -1,6 +1,7 @@
 package br.com.zupacademy.propostas.cartao;
 
 import br.com.zupacademy.propostas.biometria.Biometria;
+import br.com.zupacademy.propostas.cartao.bloqueio.BloqueioCartao;
 import br.com.zupacademy.propostas.cartao.vinculado.Vencimento;
 import br.com.zupacademy.propostas.proposta.Proposta;
 
@@ -26,6 +27,9 @@ public class Cartao {
 
     @OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
     private List<Biometria> biometrias = new ArrayList<>();
+
+    @OneToOne(mappedBy = "cartao", cascade = CascadeType.MERGE)
+    private BloqueioCartao bloqueio;
 
     private BigDecimal limite;
 
@@ -106,6 +110,14 @@ public class Cartao {
 
     public Vencimento getVencimento() {
         return vencimento;
+    }
+
+    public BloqueioCartao getBloqueio() {
+        return bloqueio;
+    }
+
+    public boolean cartaoBloqueado() {
+        return bloqueio != null;
     }
 
     public List<Biometria> getBiometrias() {

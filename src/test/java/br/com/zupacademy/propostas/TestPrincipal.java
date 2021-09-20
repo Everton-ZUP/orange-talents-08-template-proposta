@@ -2,12 +2,15 @@ package br.com.zupacademy.propostas;
 
 import br.com.zupacademy.propostas.cartao.ApiCartoes;
 import br.com.zupacademy.propostas.cartao.CartaoRepository;
+import br.com.zupacademy.propostas.cartao.bloqueio.BloqueioCartaoRepository;
 import br.com.zupacademy.propostas.proposta.PropostaRepository;
 import br.com.zupacademy.propostas.proposta.avaliacao.ApiAvaliacaoFinanceira;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -25,8 +28,14 @@ public class TestPrincipal {
     protected PropostaRepository propostaRepository;
     @Autowired
     protected CartaoRepository cartaoRepository;
+    @Autowired
+    protected BloqueioCartaoRepository bloqueioCartaoRepository;
+
     @MockBean
     protected ApiAvaliacaoFinanceira apiAvaliacaoFinanceira;
     @MockBean
     protected ApiCartoes apiCartoes;
+
+    @Mock
+    protected Jwt jwt;
 }

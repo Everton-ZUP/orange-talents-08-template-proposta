@@ -14,7 +14,8 @@ public class ConfiguracaoSegurancaParaTestes extends WebSecurityConfigurerAdapte
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http
+                .authorizeRequests()
                 .anyRequest().permitAll().and()
                 .csrf().disable();
     }

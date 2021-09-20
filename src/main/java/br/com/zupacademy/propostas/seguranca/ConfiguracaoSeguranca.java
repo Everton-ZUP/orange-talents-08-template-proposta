@@ -21,6 +21,8 @@ public class ConfiguracaoSeguranca extends WebSecurityConfigurerAdapter {
                 .authorizeRequests(authorizeRequest ->
                         authorizeRequest
                                 .antMatchers("/**").hasAuthority("SCOPE_Teste-Scope")
+                                .antMatchers("/h2-console").permitAll()
+                                .antMatchers("/h2-console/**").permitAll()
                                 .anyRequest().authenticated()
         ).oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
     }
