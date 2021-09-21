@@ -2,6 +2,8 @@ package br.com.zupacademy.propostas;
 
 import br.com.zupacademy.propostas.cartao.ApiCartoes;
 import br.com.zupacademy.propostas.cartao.CartaoRepository;
+import br.com.zupacademy.propostas.cartao.bloqueio.ApiBloqueios;
+import br.com.zupacademy.propostas.cartao.bloqueio.AvisoSistemaLegadoBloqueioCartao;
 import br.com.zupacademy.propostas.cartao.bloqueio.BloqueioCartaoRepository;
 import br.com.zupacademy.propostas.proposta.PropostaRepository;
 import br.com.zupacademy.propostas.proposta.avaliacao.ApiAvaliacaoFinanceira;
@@ -35,6 +37,10 @@ public class TestPrincipal {
     protected ApiAvaliacaoFinanceira apiAvaliacaoFinanceira;
     @MockBean
     protected ApiCartoes apiCartoes;
+    @MockBean
+    protected AvisoSistemaLegadoBloqueioCartao avisoSistemaLegadoBloqueioCartao;
+    @MockBean
+    protected ApiBloqueios apiBloqueios;
 
     @Mock
     protected Jwt jwt;
