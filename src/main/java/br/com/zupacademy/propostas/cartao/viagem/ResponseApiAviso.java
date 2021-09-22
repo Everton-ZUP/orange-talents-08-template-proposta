@@ -2,13 +2,17 @@ package br.com.zupacademy.propostas.cartao.viagem;
 
 public class ResponseApiAviso {
 
-    private AvisoViagemRetornoEnum resultado;
+    private String resultado;
 
-    public ResponseApiAviso(AvisoViagemRetornoEnum resultado) {
-        this.resultado = resultado;
+    public boolean sucesso() {
+        return resultado.equals("CRIADO");
     }
 
-    public AvisoViagemRetornoEnum getResultado() {
+    public String getResultado() {
         return resultado;
+    }
+
+    public void setResultado(String resultado) {
+        this.resultado = resultado;
     }
 }

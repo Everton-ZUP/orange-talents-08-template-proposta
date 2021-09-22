@@ -1,5 +1,6 @@
 package br.com.zupacademy.propostas.cartao.bloqueio;
 
+import br.com.zupacademy.propostas.cartao.ApiCartoes;
 import br.com.zupacademy.propostas.cartao.Cartao;
 import br.com.zupacademy.propostas.cartao.CartaoRepository;
 import br.com.zupacademy.propostas.cartao.StatusCartao;
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +17,8 @@ public class AvisoSistemaLegadoBloqueioCartao {
 
     @Autowired
     private CartaoRepository cartaoRepository;
-    @Autowired ApiBloqueios apiBloqueios;
+    @Autowired
+    private ApiCartoes apiBloqueios;
 
     @Scheduled(fixedRateString = "${bloquear.cartao.tempo.fixo}")
     public void avisarSistemaLegado(){

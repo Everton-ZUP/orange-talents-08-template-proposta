@@ -27,8 +27,9 @@ class AvisoViagemControllerTest extends TestPrincipal {
         Cartao cartao = new Cartao("9087.8907.1234.4321", LocalDateTime.now(),"Teste",null,
                 new BigDecimal(1000),null,null,null,null,null,null);
         cartaoRepository.save(cartao);
-        ResponseApiAviso responseApiAviso = new ResponseApiAviso(AvisoViagemRetornoEnum.CRIADO);
-        Mockito.when(apiAvisos.avisarSistemaLegado(Mockito.any(),Mockito.any())).thenReturn(responseApiAviso);
+        ResponseApiAviso responseApiAviso = new ResponseApiAviso();
+        responseApiAviso.setResultado("CRIADO");
+        Mockito.when(apiCartoes.avisarSistemaLegado(Mockito.any(),Mockito.any())).thenReturn(responseApiAviso);
 
         HashMap<String,String> request = new HashMap<>();
         request.put("destinoViagem","cascavel-PR");
@@ -58,8 +59,10 @@ class AvisoViagemControllerTest extends TestPrincipal {
         Cartao cartao = new Cartao("9087.8907.1234.4321", LocalDateTime.now(),"Teste",null,
                 new BigDecimal(1000),null,null,null,null,null,null);
         cartaoRepository.save(cartao);
-        ResponseApiAviso responseApiAviso = new ResponseApiAviso(AvisoViagemRetornoEnum.CRIADO);
-        Mockito.when(apiAvisos.avisarSistemaLegado(Mockito.any(),Mockito.any())).thenReturn(responseApiAviso);
+        ResponseApiAviso responseApiAviso = new ResponseApiAviso();
+        responseApiAviso.setResultado("CRIADO");
+
+        Mockito.when(apiCartoes.avisarSistemaLegado(Mockito.any(),Mockito.any())).thenReturn(responseApiAviso);
 
         HashMap<String,String> request = new HashMap<>();
         request.put("destinoViagem","cascavel-PR");
@@ -97,8 +100,10 @@ class AvisoViagemControllerTest extends TestPrincipal {
         Cartao cartao = new Cartao("9087.8907.1234.4321", LocalDateTime.now(),"Teste",null,
                 new BigDecimal(1000),null,null,null,null,null,null);
         cartaoRepository.save(cartao);
-        ResponseApiAviso responseApiAviso = new ResponseApiAviso(AvisoViagemRetornoEnum.FALHA);
-        Mockito.when(apiAvisos.avisarSistemaLegado(Mockito.any(),Mockito.any())).thenReturn(responseApiAviso);
+        ResponseApiAviso responseApiAviso = new ResponseApiAviso();
+        responseApiAviso.setResultado("FALHA");
+
+        Mockito.when(apiCartoes.avisarSistemaLegado(Mockito.any(),Mockito.any())).thenReturn(responseApiAviso);
 
         HashMap<String,String> request = new HashMap<>();
         request.put("destinoViagem","cascavel-PR");

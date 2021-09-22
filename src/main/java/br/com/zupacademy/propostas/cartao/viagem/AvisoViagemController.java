@@ -1,7 +1,9 @@
 package br.com.zupacademy.propostas.cartao.viagem;
 
+import br.com.zupacademy.propostas.cartao.ApiCartoes;
 import br.com.zupacademy.propostas.cartao.Cartao;
 import br.com.zupacademy.propostas.cartao.CartaoRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +30,7 @@ public class AvisoViagemController {
     private AvisoViagemRepository avisoViagemRepository;
 
     @Autowired
-    private ApiAvisos apiAvisos;
+    private ApiCartoes apiAvisos;
 
     @PostMapping("/cartoes/{id}/viagem")
     @ResponseStatus(HttpStatus.OK)
@@ -42,20 +44,21 @@ public class AvisoViagemController {
 
         try{
 
-            ResponseApiAviso respostaApi = apiAvisos.avisarSistemaLegado(cartao.getNumeroCartao(),
-                    body.retornaCorpoRequisicaoApiExterna());
+            ResponseApiAviso respostaApi = apiAvisos.avisarSistemaLegado(
+                    body.retornaCorpoRequisicaoApiExterna(),cartao.getNumeroCartao());
+            System.out.println(respostaApi);
 
-            if (respostaApi.getResultado().sucessoOuFalha()){
+            if (respostaApi.sucesso()){
                 AvisoViagem viagem = body.toModel(request,cartao);
                 avisoViagemRepository.save(viagem);
                 logger.info("aviso de viagem cadastrado com sucesso"+id+" "+viagem.getId());
                 return "viagem cadastrada com sucesso!";
             }else{
-                logger.error("Não foi possível notificar o sistema externo do aviso "+id+" erro: "+respostaApi.getResultado());
+                logger.error("Não foi possível notificar o sistema externo do aviso "+id);
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                         "não foi possível notificar o sistema externo");
             }
-        }catch (FeignException exception){
+        }catch (FeignException | JsonProcessingException exception){
             logger.error("Não foi possível notificar o sistema externo do aviso "+id+" erro: "+ exception.getMessage());
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "não foi possível notificar o sistema externo");

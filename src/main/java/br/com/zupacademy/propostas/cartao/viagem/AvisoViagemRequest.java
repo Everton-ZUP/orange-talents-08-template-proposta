@@ -1,12 +1,15 @@
 package br.com.zupacademy.propostas.cartao.viagem;
 
 import br.com.zupacademy.propostas.cartao.Cartao;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 
 public class AvisoViagemRequest {
@@ -31,7 +34,7 @@ public class AvisoViagemRequest {
         return new AvisoViagem(this.destinoViagem,ipAddress,userAgent,this.terminoViagem,cartao);
     }
 
-    public Map<String, String> retornaCorpoRequisicaoApiExterna() {
-        return Map.of("destino",this.destinoViagem,"validoAte",this.terminoViagem.toString());
+    public Map<String,String> retornaCorpoRequisicaoApiExterna() throws JsonProcessingException {
+        return Map.of("destino",this.destinoViagem,"",this.terminoViagem.toString());
     }
 }
