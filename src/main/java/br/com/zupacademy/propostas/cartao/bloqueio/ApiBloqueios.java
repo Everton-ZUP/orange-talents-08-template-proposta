@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
 
-
 @FeignClient(url = "${feign.client.apiCartoes.url}", name = "apiBloqueio")
 public interface ApiBloqueios {
 

@@ -2,12 +2,14 @@ package br.com.zupacademy.propostas.exception;
 
 import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -43,6 +45,13 @@ public class GenericControlerAdvice {
         erros.AddError(exception.getLocalizedMessage());
 
         return erros;
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ReturnError> validacaoExection(ResponseStatusException exception){
+        ReturnError returnError = new ReturnError();
+        returnError.AddError(exception.getReason());
+        return new ResponseEntity(returnError,exception.getStatus());
     }
 
 }

@@ -46,8 +46,8 @@ public class Cartao {
 
     private BigDecimal limite;
 
-    @OneToOne(mappedBy = "cartao")
-    private AvisoViagem avisoViagem;
+    @OneToMany(mappedBy = "cartao")
+    private List<AvisoViagem> avisoViagem = new ArrayList<>();
 
     @ElementCollection
     private List<HashMap<String,Object>> bloqueios;
@@ -156,7 +156,11 @@ public class Cartao {
         return uuid;
     }
 
-    public AvisoViagem getAvisoViagem() {
+    public List<AvisoViagem> getAvisoViagem() {
         return avisoViagem;
+    }
+
+    public void adicionaAvisoViagem(AvisoViagem avisoViagem) {
+        this.avisoViagem.add(avisoViagem);
     }
 }

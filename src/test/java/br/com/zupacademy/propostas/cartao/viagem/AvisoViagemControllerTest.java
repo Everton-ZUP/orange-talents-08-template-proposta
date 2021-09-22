@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mockito;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -26,6 +27,8 @@ class AvisoViagemControllerTest extends TestPrincipal {
         Cartao cartao = new Cartao("9087.8907.1234.4321", LocalDateTime.now(),"Teste",null,
                 new BigDecimal(1000),null,null,null,null,null,null);
         cartaoRepository.save(cartao);
+        ResponseApiAviso responseApiAviso = new ResponseApiAviso(AvisoViagemRetornoEnum.CRIADO);
+        Mockito.when(apiAvisos.avisarSistemaLegado(Mockito.any(),Mockito.any())).thenReturn(responseApiAviso);
 
         HashMap<String,String> request = new HashMap<>();
         request.put("destinoViagem","cascavel-PR");
@@ -55,6 +58,8 @@ class AvisoViagemControllerTest extends TestPrincipal {
         Cartao cartao = new Cartao("9087.8907.1234.4321", LocalDateTime.now(),"Teste",null,
                 new BigDecimal(1000),null,null,null,null,null,null);
         cartaoRepository.save(cartao);
+        ResponseApiAviso responseApiAviso = new ResponseApiAviso(AvisoViagemRetornoEnum.CRIADO);
+        Mockito.when(apiAvisos.avisarSistemaLegado(Mockito.any(),Mockito.any())).thenReturn(responseApiAviso);
 
         HashMap<String,String> request = new HashMap<>();
         request.put("destinoViagem","cascavel-PR");
@@ -84,6 +89,25 @@ class AvisoViagemControllerTest extends TestPrincipal {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+    }
+
+    @Test
+    public void deveriaDarErroAoCadastrarAvisoDeViagemQueRetornaComFalhaDaApiExterna() throws Exception {
+        Cartao cartao = new Cartao("9087.8907.1234.4321", LocalDateTime.now(),"Teste",null,
+                new BigDecimal(1000),null,null,null,null,null,null);
+        cartaoRepository.save(cartao);
+        ResponseApiAviso responseApiAviso = new ResponseApiAviso(AvisoViagemRetornoEnum.FALHA);
+        Mockito.when(apiAvisos.avisarSistemaLegado(Mockito.any(),Mockito.any())).thenReturn(responseApiAviso);
+
+        HashMap<String,String> request = new HashMap<>();
+        request.put("destinoViagem","cascavel-PR");
+        request.put("terminoViagem","4000-01-01");
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/cartoes/" + cartao.getUuid() + "/viagem")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(request)))
+            .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity());
 
     }
 }

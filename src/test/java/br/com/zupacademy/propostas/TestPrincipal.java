@@ -5,6 +5,7 @@ import br.com.zupacademy.propostas.cartao.CartaoRepository;
 import br.com.zupacademy.propostas.cartao.bloqueio.ApiBloqueios;
 import br.com.zupacademy.propostas.cartao.bloqueio.AvisoSistemaLegadoBloqueioCartao;
 import br.com.zupacademy.propostas.cartao.bloqueio.BloqueioCartaoRepository;
+import br.com.zupacademy.propostas.cartao.viagem.ApiAvisos;
 import br.com.zupacademy.propostas.cartao.viagem.AvisoViagemRepository;
 import br.com.zupacademy.propostas.proposta.PropostaRepository;
 import br.com.zupacademy.propostas.proposta.avaliacao.ApiAvaliacaoFinanceira;
@@ -24,6 +25,7 @@ import javax.transaction.Transactional;
 @Transactional
 @ActiveProfiles("test")
 public class TestPrincipal {
+
 
     @Autowired
     protected MockMvc mockMvc;
@@ -45,6 +47,8 @@ public class TestPrincipal {
     protected AvisoSistemaLegadoBloqueioCartao avisoSistemaLegadoBloqueioCartao;
     @MockBean
     protected ApiBloqueios apiBloqueios;
+    @MockBean
+    protected ApiAvisos apiAvisos;
 
     @Mock
     protected Jwt jwt;

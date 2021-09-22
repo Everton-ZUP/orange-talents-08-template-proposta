@@ -7,6 +7,7 @@ import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Map;
 
 public class AvisoViagemRequest {
 
@@ -28,5 +29,9 @@ public class AvisoViagemRequest {
         String userAgent = request.getHeader("User-Agent");
 
         return new AvisoViagem(this.destinoViagem,ipAddress,userAgent,this.terminoViagem,cartao);
+    }
+
+    public Map<String, String> retornaCorpoRequisicaoApiExterna() {
+        return Map.of("destino",this.destinoViagem,"validoAte",this.terminoViagem.toString());
     }
 }

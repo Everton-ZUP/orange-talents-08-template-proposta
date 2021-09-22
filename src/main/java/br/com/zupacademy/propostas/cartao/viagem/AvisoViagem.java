@@ -29,7 +29,7 @@ public class AvisoViagem {
     private LocalDateTime instanteDeCriacao = LocalDateTime.now();
 
     @NotNull
-    @OneToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "cartao_id")
     private Cartao cartao;
 
