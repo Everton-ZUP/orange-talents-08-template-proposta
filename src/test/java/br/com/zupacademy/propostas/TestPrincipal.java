@@ -5,6 +5,7 @@ import br.com.zupacademy.propostas.cartao.CartaoRepository;
 import br.com.zupacademy.propostas.cartao.bloqueio.ApiBloqueios;
 import br.com.zupacademy.propostas.cartao.bloqueio.AvisoSistemaLegadoBloqueioCartao;
 import br.com.zupacademy.propostas.cartao.bloqueio.BloqueioCartaoRepository;
+import br.com.zupacademy.propostas.cartao.viagem.AvisoViagemRepository;
 import br.com.zupacademy.propostas.proposta.PropostaRepository;
 import br.com.zupacademy.propostas.proposta.avaliacao.ApiAvaliacaoFinanceira;
 import org.mockito.Mock;
@@ -32,6 +33,9 @@ public class TestPrincipal {
     protected CartaoRepository cartaoRepository;
     @Autowired
     protected BloqueioCartaoRepository bloqueioCartaoRepository;
+    @Autowired
+    protected AvisoViagemRepository avisoViagemRepository;
+
 
     @MockBean
     protected ApiAvaliacaoFinanceira apiAvaliacaoFinanceira;

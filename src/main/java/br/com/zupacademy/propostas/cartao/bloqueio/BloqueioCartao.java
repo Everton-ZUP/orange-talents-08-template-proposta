@@ -19,6 +19,7 @@ public class BloqueioCartao {
     private String userAgent;
 
     @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "cartao_id")
     private Cartao cartao;
 
     @Deprecated

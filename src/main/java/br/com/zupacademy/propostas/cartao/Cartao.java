@@ -2,8 +2,10 @@ package br.com.zupacademy.propostas.cartao;
 
 import br.com.zupacademy.propostas.biometria.Biometria;
 import br.com.zupacademy.propostas.cartao.bloqueio.BloqueioCartao;
+import br.com.zupacademy.propostas.cartao.viagem.AvisoViagem;
 import br.com.zupacademy.propostas.cartao.vinculado.Vencimento;
 import br.com.zupacademy.propostas.proposta.Proposta;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -12,13 +14,20 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 
 @Entity
 public class Cartao {
 
-    @Id @NotNull @Column(unique = true)
+    @NotNull @Column(unique = true)
     private String numeroCartao;
+
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private String uuid;
+
     private LocalDateTime emitidoEm;
     private String titular;
 
@@ -35,6 +44,9 @@ public class Cartao {
     private BloqueioCartao bloqueio;
 
     private BigDecimal limite;
+
+    @OneToOne(mappedBy = "cartao")
+    private AvisoViagem avisoViagem;
 
     @ElementCollection
     private List<HashMap<String,Object>> bloqueios;
@@ -137,5 +149,13 @@ public class Cartao {
 
     public void setStatus(StatusCartao status) {
         this.status = status;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public AvisoViagem getAvisoViagem() {
+        return avisoViagem;
     }
 }

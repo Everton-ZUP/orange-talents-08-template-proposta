@@ -20,9 +20,11 @@ public class ConfiguracaoSeguranca extends WebSecurityConfigurerAdapter {
         http    .cors().and().csrf().disable()
                 .authorizeRequests(authorizeRequest ->
                         authorizeRequest
-                                .antMatchers("/**").hasAuthority("SCOPE_Teste-Scope")
                                 .antMatchers("/h2-console").permitAll()
                                 .antMatchers("/h2-console/**").permitAll()
+                                .antMatchers("/actuator/prometheus").permitAll()
+                                .antMatchers("/propostas/**").hasAuthority("SCOPE_Teste-Scope")
+                                .antMatchers("/cartoes//**").hasAuthority("SCOPE_Teste-Scope")
                                 .anyRequest().authenticated()
         ).oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
     }

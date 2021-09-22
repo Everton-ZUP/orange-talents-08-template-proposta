@@ -13,7 +13,7 @@ public class PropostaConsultaResponse {
     private String endereco;
     private BigDecimal salario;
     private EstadoProposta estado;
-    private String cartao;
+    private String cartaoId;
 
     public PropostaConsultaResponse(Proposta proposta) {
         this.documento = proposta.getDocumento();
@@ -24,7 +24,7 @@ public class PropostaConsultaResponse {
         this.estado = proposta.getEstado();
 
         if (proposta.getCartao() != null)
-            this.cartao = proposta.getCartao().getNumeroCartao();
+            this.cartaoId = proposta.getCartao().getUuid();
     }
 
     public String getDocumento() {
@@ -52,6 +52,6 @@ public class PropostaConsultaResponse {
     }
 
     public String getCartao() {
-        return cartao;
+        return cartaoId;
     }
 }
