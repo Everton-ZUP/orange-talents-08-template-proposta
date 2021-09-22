@@ -40,7 +40,8 @@ public class Cartao {
     @OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
     private List<Biometria> biometrias = new ArrayList<>();
 
-    @OneToOne(mappedBy = "cartao", cascade = CascadeType.MERGE)
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "bloqueio_id")
     private BloqueioCartao bloqueio;
 
     private BigDecimal limite;

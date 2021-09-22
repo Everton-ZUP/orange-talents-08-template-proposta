@@ -18,8 +18,7 @@ public class BloqueioCartao {
     private String ip;
     private String userAgent;
 
-    @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "cartao_id")
+    @OneToOne(cascade = CascadeType.MERGE, mappedBy = "bloqueio")
     private Cartao cartao;
 
     @Deprecated
