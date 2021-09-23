@@ -6,10 +6,12 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import java.util.Objects;
+
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
-public class CarteiraDigitalPaypal {
+public class CarteiraDigital {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -24,14 +26,18 @@ public class CarteiraDigitalPaypal {
     @JoinColumn(name = "cartao_id")
     private Cartao cartao;
 
-    public CarteiraDigitalPaypal(String idAssociacao, String email, Cartao cartao) {
+    @Enumerated(EnumType.STRING)
+    private TipoCarteira tipoCarteira;
+
+    public CarteiraDigital(String idAssociacao, String email, Cartao cartao, TipoCarteira tipo) {
         this.idAssociacao = idAssociacao;
         this.email = email;
         this.cartao = cartao;
+        this.tipoCarteira = tipo;
     }
 
     @Deprecated
-    public CarteiraDigitalPaypal() {
+    public CarteiraDigital() {
     }
 
     public Long getId() {
@@ -48,5 +54,22 @@ public class CarteiraDigitalPaypal {
 
     public Cartao getCartao() {
         return cartao;
+    }
+
+    public TipoCarteira getTipoCarteira() {
+        return tipoCarteira;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CarteiraDigital that = (CarteiraDigital) o;
+        return Objects.equals(cartao, that.cartao) && tipoCarteira == that.tipoCarteira;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cartao, tipoCarteira);
     }
 }

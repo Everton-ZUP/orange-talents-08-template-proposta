@@ -25,7 +25,7 @@ class AvisoViagemControllerTest extends TestPrincipal {
     @Test
     public void deveriaCadastrarAvisoDeViagemComSucesso() throws Exception {
         Cartao cartao = new Cartao("9087.8907.1234.4321", LocalDateTime.now(),"Teste",null,
-                new BigDecimal(1000),null,null,null,null,null,null);
+                new BigDecimal(1000),null,null,null,null,null);
         cartaoRepository.save(cartao);
         ResponseApiAviso responseApiAviso = new ResponseApiAviso();
         responseApiAviso.setResultado("CRIADO");
@@ -57,7 +57,7 @@ class AvisoViagemControllerTest extends TestPrincipal {
     @CsvSource({"3021-12-01","2020-12-01"})
     public void deveriaDarErroAoCadastrarAvisoDeViagemFaltandoCampoDataTerminoDaViagemOuNoPassado(LocalDate data) throws Exception {
         Cartao cartao = new Cartao("9087.8907.1234.4321", LocalDateTime.now(),"Teste",null,
-                new BigDecimal(1000),null,null,null,null,null,null);
+                new BigDecimal(1000),null,null,null,null,null);
         cartaoRepository.save(cartao);
         ResponseApiAviso responseApiAviso = new ResponseApiAviso();
         responseApiAviso.setResultado("CRIADO");
@@ -81,7 +81,7 @@ class AvisoViagemControllerTest extends TestPrincipal {
     @Test
     public void deveriaDarErroAoCadastrarAvisoDeViagemFaltandoCampoDestino() throws Exception {
         Cartao cartao = new Cartao("9087.8907.1234.4321", LocalDateTime.now(),"Teste",null,
-                new BigDecimal(1000),null,null,null,null,null,null);
+                new BigDecimal(1000),null,null,null,null,null);
         cartaoRepository.save(cartao);
 
         HashMap<String,String> request = new HashMap<>();
@@ -98,7 +98,7 @@ class AvisoViagemControllerTest extends TestPrincipal {
     @Test
     public void deveriaDarErroAoCadastrarAvisoDeViagemQueRetornaComFalhaDaApiExterna() throws Exception {
         Cartao cartao = new Cartao("9087.8907.1234.4321", LocalDateTime.now(),"Teste",null,
-                new BigDecimal(1000),null,null,null,null,null,null);
+                new BigDecimal(1000),null,null,null,null,null);
         cartaoRepository.save(cartao);
         ResponseApiAviso responseApiAviso = new ResponseApiAviso();
         responseApiAviso.setResultado("FALHA");

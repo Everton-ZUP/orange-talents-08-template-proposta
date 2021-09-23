@@ -18,7 +18,7 @@ class BiometriaControllerTest extends TestPrincipal {
     @Test
     public void deveriaCadastrarBiometriaComSucesso() throws Exception {
         Cartao cartao = new Cartao("9087.8907.1234.4321", LocalDateTime.now(),"Teste",null,
-                new BigDecimal(1000),null,null,null,null,null,null);
+                new BigDecimal(1000),null,null,null,null,null);
 
         cartaoRepository.save(cartao);
 
@@ -33,7 +33,7 @@ class BiometriaControllerTest extends TestPrincipal {
     @Test
     public void deveriaDarErroAoCadastrarFingerPrintSemSerEmBase64() throws Exception {
         Cartao cartao = new Cartao("9087.8907.1234.4322", LocalDateTime.now(),"Teste",null,
-                new BigDecimal(1000),null,null,null,null,null,null);
+                new BigDecimal(1000),null,null,null,null,null);
         cartao = cartaoRepository.save(cartao);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/cartoes/"+cartao.getUuid()+"/biometrias")

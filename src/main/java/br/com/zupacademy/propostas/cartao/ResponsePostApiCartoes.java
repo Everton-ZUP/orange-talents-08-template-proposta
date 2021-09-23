@@ -48,6 +48,6 @@ public class ResponsePostApiCartoes {
                     Integer.parseInt(this.vencimento.get("dia").toString()),
                     LocalDateTime.parse(this.vencimento.get("dataDeCriacao").toString()));
         }
-        return new Cartao(id,emitidoEm,titular,null,limite,bloqueios,avisos,carteiras,parcelas,renegociacao,vencimento);
+        return new Cartao(id,emitidoEm,titular,null,limite,bloqueios,avisos,parcelas,renegociacao,vencimento);
     }
 }

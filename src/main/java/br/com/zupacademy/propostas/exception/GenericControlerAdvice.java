@@ -1,8 +1,10 @@
 package br.com.zupacademy.propostas.exception;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -47,11 +49,19 @@ public class GenericControlerAdvice {
         return erros;
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ReturnError validaConstrucaoJson(HttpMessageNotReadableException exception){
+        ReturnError returnError = new ReturnError();
+        returnError.addErrorField("","", exception.getLocalizedMessage());
+        return returnError;
+    }
+
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ReturnError> validacaoExection(ResponseStatusException exception){
         ReturnError returnError = new ReturnError();
         returnError.AddError(exception.getReason());
-        return new ResponseEntity(returnError,exception.getStatus());
+        return new ResponseEntity(returnError, exception.getStatus());
     }
 
 }

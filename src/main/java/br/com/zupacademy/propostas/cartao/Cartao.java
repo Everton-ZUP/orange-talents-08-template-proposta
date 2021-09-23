@@ -2,7 +2,8 @@ package br.com.zupacademy.propostas.cartao;
 
 import br.com.zupacademy.propostas.biometria.Biometria;
 import br.com.zupacademy.propostas.cartao.bloqueio.BloqueioCartao;
-import br.com.zupacademy.propostas.cartao.carteira.CarteiraDigitalPaypal;
+import br.com.zupacademy.propostas.cartao.carteira.CarteiraDigital;
+import br.com.zupacademy.propostas.cartao.carteira.TipoCarteira;
 import br.com.zupacademy.propostas.cartao.viagem.AvisoViagem;
 import br.com.zupacademy.propostas.cartao.vinculado.Vencimento;
 import br.com.zupacademy.propostas.proposta.Proposta;
@@ -12,10 +13,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 @Entity
@@ -50,15 +48,13 @@ public class Cartao {
     @OneToMany(mappedBy = "cartao")
     private List<AvisoViagem> avisoViagem = new ArrayList<>();
 
-    @OneToOne(mappedBy = "cartao")
-    private CarteiraDigitalPaypal carteira;
+    @OneToMany(mappedBy = "cartao", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    private Set<CarteiraDigital> carteiras = new HashSet<>();
 
     @ElementCollection
     private List<HashMap<String,Object>> bloqueios;
     @ElementCollection
     private List<HashMap<String,Object>> avisos;
-    @ElementCollection
-    private List<HashMap<String,Object>> carteiras;
     @ElementCollection
     private List<HashMap<String,Object>> parcelas;
 
@@ -69,7 +65,7 @@ public class Cartao {
     private Vencimento vencimento;
 
     public Cartao(String numeroCartao, LocalDateTime emitidoEm, String titular, Proposta proposta, BigDecimal limite,
-                  List<HashMap<String, Object>> bloqueios, List<HashMap<String, Object>> avisos, List<HashMap<String, Object>> carteiras,
+                  List<HashMap<String, Object>> bloqueios, List<HashMap<String, Object>> avisos,
                   List<HashMap<String, Object>> parcelas, HashMap<String, Object> renegociacao, Vencimento vencimento) {
         this.numeroCartao = numeroCartao;
         this.emitidoEm = emitidoEm;
@@ -78,7 +74,6 @@ public class Cartao {
         this.limite = limite;
         this.bloqueios = bloqueios;
         this.avisos = avisos;
-        this.carteiras = carteiras;
         this.parcelas = parcelas;
         this.renegociacao = renegociacao;
         this.vencimento = vencimento;
@@ -86,6 +81,10 @@ public class Cartao {
 
     @Deprecated
     public Cartao() {
+    }
+
+    public void adicionarCarteira(CarteiraDigital carteiraDigital){
+        this.carteiras.add(carteiraDigital);
     }
 
     public String getNumeroCartao() {
@@ -114,10 +113,6 @@ public class Cartao {
 
     public List<HashMap<String, Object>> getAvisos() {
         return avisos;
-    }
-
-    public List<HashMap<String, Object>> getCarteiras() {
-        return carteiras;
     }
 
     public List<HashMap<String, Object>> getParcelas() {
@@ -168,11 +163,16 @@ public class Cartao {
         this.avisoViagem.add(avisoViagem);
     }
 
-    public CarteiraDigitalPaypal getCarteira() {
-        return carteira;
+    public Set<CarteiraDigital> getCarteiras() {
+        return carteiras;
     }
 
-    public boolean estaAssociadoACarteira() {
-        return this.carteira != null;
+    public boolean estaAssociadoACarteira(TipoCarteira tipo) {
+        if (this.carteiras == null) return false;
+        boolean verificador = false;
+        for (CarteiraDigital carteira : this.carteiras){
+            if (carteira.getTipoCarteira().equals(tipo)) verificador = true;
+        }
+        return verificador;
     }
 }

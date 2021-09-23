@@ -17,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
 
 @RestController
 public class CarteiraDigitalController {
@@ -25,7 +24,7 @@ public class CarteiraDigitalController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private CarteiraDigitalPaypalRepository carteiraDigitalPaypalRepository;
+    private CarteiraDigitalRepository carteiraDigitalRepository;
 
     @Autowired
     private CartaoRepository cartaoRepository;
@@ -33,7 +32,7 @@ public class CarteiraDigitalController {
     @Autowired
     private ApiCartoes apiCartoes;
 
-    @PostMapping("/cartoes/{id}/carteiraPaypal")
+    @PostMapping("/cartoes/{id}/carteiras")
     private ResponseEntity<?> adicionarCarteira(@PathVariable("id") String id,
                                                 @RequestBody @Valid AdicionarCarteiraRequest request,
                                                 UriComponentsBuilder uri){
@@ -43,7 +42,7 @@ public class CarteiraDigitalController {
             return new ResponseStatusException(HttpStatus.NOT_FOUND,"Cartão informado não encontrado");
         });
 
-        if (cartao.estaAssociadoACarteira()){
+        if (cartao.estaAssociadoACarteira(request.getCarteira())){
             logger.error("Não foi possível cadastrar o cartão na carteira solicitada, pois ele já está associado ");
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,"Não foi possível associar o cartão a carteira, pois ele já está associado a mesma");
         }
@@ -51,12 +50,12 @@ public class CarteiraDigitalController {
         try {
             ResponseApiCarteira responseApiCarteira = apiCartoes.adicionarCarteira(cartao.getNumeroCartao(),
                     request.corpoAvisoSistemaLegado());
-            CarteiraDigitalPaypal carteira = request.toModel(responseApiCarteira.getId(), cartao);
-            carteiraDigitalPaypalRepository.save(carteira);
+            CarteiraDigital carteira = request.toModel(responseApiCarteira.getId(), cartao);
+            carteiraDigitalRepository.save(carteira);
 
             logger.info("Carteira: "+carteira.getId()+"associada com sucesso para o cartão: ****.****."
-                    +cartao.getNumeroCartao().substring(6));
-            return ResponseEntity.created(uri.path("/cartoes/{id}/carteiraPaypal/{idc}").build(cartao.getUuid(),carteira.getId())).build();
+                    +cartao.getNumeroCartao().substring(13));
+            return ResponseEntity.created(uri.path("/cartoes/{id}/carteiras/{idc}").build(cartao.getUuid(),carteira.getId())).build();
 
         }catch (FeignException error){
             logger.error("Não foi possível cadastrar o cartão na carteira solicitada "+error.toString());

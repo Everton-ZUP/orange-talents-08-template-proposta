@@ -23,7 +23,7 @@ class BloqueioControllerTest extends TestPrincipal {
     @Test
     public void deveriaCriarEntidadeDeBloqueioDoCartaoERetornarOk() throws Exception {
         Proposta proposta = new Proposta("169.059.230-36","zup@zup.test","Teste","null",new BigDecimal(100));
-        Cartao cartao = new Cartao("1234.1234", LocalDateTime.now(),"Teste",proposta,new BigDecimal(100),null,null,null,null,null,null);
+        Cartao cartao = new Cartao("1234.1234", LocalDateTime.now(),"Teste",proposta,new BigDecimal(100),null,null,null,null,null);
         proposta.setCartao(cartao);
         cartaoRepository.save(cartao);
         propostaRepository.save(proposta);
