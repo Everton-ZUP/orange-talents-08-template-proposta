@@ -8,6 +8,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,12 @@ public class PropostaController {
     @Autowired
     private MeterRegistry meterRegistry;
 
+    private final Tracer tracer;
+
+    public PropostaController(Tracer tracer) {
+        this.tracer = tracer;
+    }
+
     @GetMapping("/{id}") @ResponseStatus(HttpStatus.OK)
     public PropostaConsultaResponse buscarProposta(@PathVariable("id") Long idProposta){
 
@@ -45,7 +53,9 @@ public class PropostaController {
 
     @PostMapping @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> cadastrarProposta(@RequestBody @Valid PropostaRequest formulario, UriComponentsBuilder uri) {
-
+        Span span = tracer.activeSpan();
+        span.setBaggageItem("user.email", formulario.getEmail());
+        span.setTag("usuario.email", formulario.getEmail());
         return this.meterRegistry.timer("tempo-criar-proposta").record(()->{
                 Proposta proposta = formulario.toModel();
 
