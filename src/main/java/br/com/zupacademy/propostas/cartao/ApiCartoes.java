@@ -1,6 +1,7 @@
 package br.com.zupacademy.propostas.cartao;
 
 import br.com.zupacademy.propostas.cartao.bloqueio.ResponseApiBloqueio;
+import br.com.zupacademy.propostas.cartao.carteira.ResponseApiCarteira;
 import br.com.zupacademy.propostas.cartao.viagem.ResponseApiAviso;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,5 +21,8 @@ public interface ApiCartoes {
     ResponseApiAviso avisarSistemaLegado(@RequestBody Map<String,String> corpo, @PathVariable String id);
 
     @PostMapping(value = "/{id}/bloqueios")
-     ResponseApiBloqueio bloquearCartao(@PathVariable String id, @RequestBody Map<String,String> corpo);
+    ResponseApiBloqueio bloquearCartao(@PathVariable String id, @RequestBody Map<String,String> corpo);
+
+    @PostMapping(value = "/{id}/carteiras")
+    ResponseApiCarteira adicionarCarteira(@PathVariable String id, @RequestBody Map<String,String> corpo);
 }

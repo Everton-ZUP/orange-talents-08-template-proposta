@@ -2,6 +2,7 @@ package br.com.zupacademy.propostas.cartao;
 
 import br.com.zupacademy.propostas.biometria.Biometria;
 import br.com.zupacademy.propostas.cartao.bloqueio.BloqueioCartao;
+import br.com.zupacademy.propostas.cartao.carteira.CarteiraDigitalPaypal;
 import br.com.zupacademy.propostas.cartao.viagem.AvisoViagem;
 import br.com.zupacademy.propostas.cartao.vinculado.Vencimento;
 import br.com.zupacademy.propostas.proposta.Proposta;
@@ -48,6 +49,9 @@ public class Cartao {
 
     @OneToMany(mappedBy = "cartao")
     private List<AvisoViagem> avisoViagem = new ArrayList<>();
+
+    @OneToOne(mappedBy = "cartao")
+    private CarteiraDigitalPaypal carteira;
 
     @ElementCollection
     private List<HashMap<String,Object>> bloqueios;
@@ -162,5 +166,13 @@ public class Cartao {
 
     public void adicionaAvisoViagem(AvisoViagem avisoViagem) {
         this.avisoViagem.add(avisoViagem);
+    }
+
+    public CarteiraDigitalPaypal getCarteira() {
+        return carteira;
+    }
+
+    public boolean estaAssociadoACarteira() {
+        return this.carteira != null;
     }
 }
