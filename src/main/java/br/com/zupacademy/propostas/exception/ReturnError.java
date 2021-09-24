@@ -16,12 +16,14 @@ public class ReturnError {
         global.add(errorMessage);
     }
 
-    public void addErrorField (String campo, Object valor, String mensagem){
+    public void addErrorField (String campo, Object valor, String mensagem, String path, String status){
 
         HashMap<String,Object> map = new HashMap<>();
         map.put("Field",campo);
         map.put("Value",valor);
         map.put("Message",mensagem);
+        map.put("path",path);
+        map.put("status",status);
         map.put("Time", LocalDateTime.now());
 
         fields.add(map);
@@ -33,5 +35,13 @@ public class ReturnError {
 
     public List<?> getFields() {
         return fields;
+    }
+
+    @Override
+    public String toString() {
+        return "ReturnError{" +
+                "global=" + global +
+                ", fields=" + fields +
+                '}';
     }
 }

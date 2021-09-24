@@ -5,6 +5,7 @@ import br.com.zupacademy.propostas.cartao.Cartao;
 import br.com.zupacademy.propostas.cartao.CartaoRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import feign.FeignException;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,16 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @RestController
 public class AvisoViagemController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private MeterRegistry registry;
 
     @Autowired
     private CartaoRepository cartaoRepository;
@@ -38,7 +43,7 @@ public class AvisoViagemController {
     public String adicionar(@PathVariable("id") String id, HttpServletRequest request,
                             @RequestBody @Valid AvisoViagemRequest body){
         Cartao cartao = cartaoRepository.findById(id).orElseThrow(()->{
-            logger.error("cartão informado na url não encontrado"+id);
+            logger.error("Cartão informado na url não encontrado "+id);
             return new ResponseStatusException(HttpStatus.NOT_FOUND,"cartão não existe");
         });
 
@@ -46,15 +51,16 @@ public class AvisoViagemController {
 
             ResponseApiAviso respostaApi = apiAvisos.avisarSistemaLegado(
                     body.retornaCorpoRequisicaoApiExterna(),cartao.getNumeroCartao());
-            System.out.println(respostaApi);
 
             if (respostaApi.sucesso()){
                 AvisoViagem viagem = body.toModel(request,cartao);
                 avisoViagemRepository.save(viagem);
                 logger.info("aviso de viagem cadastrado com sucesso"+id+" "+viagem.getId());
+                registry.counter("AvisoViagem_Cartao_Sucesso").increment();
                 return "viagem cadastrada com sucesso!";
             }else{
                 logger.error("Não foi possível notificar o sistema externo do aviso "+id);
+                registry.counter("AvisoViagem_Cartao_Erro").increment();
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                         "não foi possível notificar o sistema externo");
             }
