@@ -1,6 +1,7 @@
 package br.com.zupacademy.propostas.proposta;
 
 import br.com.zupacademy.propostas.cartao.Cartao;
+import br.com.zupacademy.propostas.seguranca.DadosSensiveisCrypto;
 import br.com.zupacademy.propostas.validation.CpfOuCnpj;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ public class Proposta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CpfOuCnpj @NotBlank @Column(unique = true)
+    @NotBlank @Column(unique = true)
     private String documento;
     @Email @NotBlank
     private String email;
@@ -34,8 +35,16 @@ public class Proposta {
     @JoinColumn(name = "numero_cartao")
     private Cartao cartao;
 
+    /**
+     *
+     * @param documento Deve ser sem criptografia
+     * @param email
+     * @param nome
+     * @param endereco
+     * @param salario
+     */
     public Proposta(String documento, String email, String nome, String endereco, BigDecimal salario) {
-        this.documento = documento;
+        this.documento = DadosSensiveisCrypto.encrypt(documento);
         this.email = email;
         this.nome = nome;
         this.endereco = endereco;
@@ -51,7 +60,7 @@ public class Proposta {
     }
 
     public String getDocumento() {
-        return documento;
+        return DadosSensiveisCrypto.decrypt(documento);
     }
 
     public String getEmail() {

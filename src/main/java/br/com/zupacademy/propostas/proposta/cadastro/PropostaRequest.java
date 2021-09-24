@@ -1,6 +1,7 @@
 package br.com.zupacademy.propostas.proposta.cadastro;
 
 import br.com.zupacademy.propostas.proposta.Proposta;
+import br.com.zupacademy.propostas.seguranca.DadosSensiveisCrypto;
 import br.com.zupacademy.propostas.validation.CpfOuCnpj;
 import br.com.zupacademy.propostas.validation.UniqueValue;
 

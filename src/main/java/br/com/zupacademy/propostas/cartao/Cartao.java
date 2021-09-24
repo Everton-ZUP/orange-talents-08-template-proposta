@@ -7,6 +7,7 @@ import br.com.zupacademy.propostas.cartao.carteira.TipoCarteira;
 import br.com.zupacademy.propostas.cartao.viagem.AvisoViagem;
 import br.com.zupacademy.propostas.cartao.vinculado.Vencimento;
 import br.com.zupacademy.propostas.proposta.Proposta;
+import br.com.zupacademy.propostas.seguranca.DadosSensiveisCrypto;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -64,10 +65,23 @@ public class Cartao {
     @JoinColumn(name = "vencimento_id")
     private Vencimento vencimento;
 
-    public Cartao(String numeroCartao, LocalDateTime emitidoEm, String titular, Proposta proposta, BigDecimal limite,
+    /**
+     *
+     * @param numeroCartaoSemCriptografia deve ser sem criptografia
+     * @param emitidoEm
+     * @param titular
+     * @param proposta
+     * @param limite
+     * @param bloqueios
+     * @param avisos
+     * @param parcelas
+     * @param renegociacao
+     * @param vencimento
+     */
+    public Cartao(String numeroCartaoSemCriptografia, LocalDateTime emitidoEm, String titular, Proposta proposta, BigDecimal limite,
                   List<HashMap<String, Object>> bloqueios, List<HashMap<String, Object>> avisos,
                   List<HashMap<String, Object>> parcelas, HashMap<String, Object> renegociacao, Vencimento vencimento) {
-        this.numeroCartao = numeroCartao;
+        this.numeroCartao = DadosSensiveisCrypto.encrypt(numeroCartaoSemCriptografia);
         this.emitidoEm = emitidoEm;
         this.titular = titular;
         this.proposta = proposta;
@@ -88,7 +102,7 @@ public class Cartao {
     }
 
     public String getNumeroCartao() {
-        return numeroCartao;
+        return DadosSensiveisCrypto.decrypt(numeroCartao);
     }
 
     public LocalDateTime getEmitidoEm() {

@@ -1,6 +1,7 @@
 package br.com.zupacademy.propostas.validation;
 
 import br.com.zupacademy.propostas.exception.ErroRegraDeNegocio;
+import br.com.zupacademy.propostas.seguranca.DadosSensiveisCrypto;
 import org.springframework.util.Assert;
 
 import javax.persistence.EntityManager;
@@ -26,6 +27,9 @@ public class UniqueValueValidator implements ConstraintValidator<UniqueValue,Obj
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
+        if (classe.getSimpleName().equals("Proposta")){
+            value = DadosSensiveisCrypto.encrypt((String) value);
+        }
         Query sql = entityManager.createQuery("select 1 from "+classe.getName()+" where "+campo+" = :value");
         sql.setParameter("value", value);
         List<?> retorno = sql.getResultList();

@@ -1,5 +1,7 @@
 package br.com.zupacademy.propostas;
 
+import br.com.zupacademy.propostas.seguranca.DadosSensiveisCrypto;
+import br.com.zupacademy.propostas.seguranca.DadosSensiveisOfuscar;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;

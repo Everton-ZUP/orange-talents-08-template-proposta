@@ -4,6 +4,8 @@ import br.com.zupacademy.propostas.TestPrincipal;
 import br.com.zupacademy.propostas.proposta.avaliacao.EnumAvaliacaoFinanceiraResultado;
 import br.com.zupacademy.propostas.proposta.avaliacao.ResponseAvaliacaoFinanceira;
 import br.com.zupacademy.propostas.proposta.cadastro.PropostaRequest;
+import br.com.zupacademy.propostas.seguranca.DadosSensiveisCrypto;
+import br.com.zupacademy.propostas.seguranca.DadosSensiveisOfuscar;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import feign.Request;
@@ -41,7 +43,7 @@ class PropostaControllerTest extends TestPrincipal {
                 .andExpect(MockMvcResultMatchers.header().exists("Location"))
                 .andExpect(MockMvcResultMatchers.redirectedUrlPattern("**/propostas/*"));
 
-        Assertions.assertTrue(propostaRepository.findByDocumento("298.625.190-02").getEstado().equals(EstadoProposta.ELEGIVEL));
+        Assertions.assertTrue(propostaRepository.findByDocumento(DadosSensiveisCrypto.encrypt("298.625.190-02")).getEstado().equals(EstadoProposta.ELEGIVEL));
     }
 
     @ParameterizedTest
@@ -124,7 +126,7 @@ class PropostaControllerTest extends TestPrincipal {
                 .andExpect(MockMvcResultMatchers.header().exists("Location"))
                 .andExpect(MockMvcResultMatchers.redirectedUrlPattern("**/propostas/*"));
 
-        Assertions.assertTrue(propostaRepository.findByDocumento("298.625.190-02").getEstado().equals(EstadoProposta.NAO_ELEGIVEL));
+        Assertions.assertTrue(propostaRepository.findByDocumento(DadosSensiveisCrypto.encrypt("298.625.190-02")).getEstado().equals(EstadoProposta.NAO_ELEGIVEL));
     }
 
     @Test
@@ -144,7 +146,7 @@ class PropostaControllerTest extends TestPrincipal {
 
         mockMvc.perform(MockMvcRequestBuilders.get(location))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("documento").value("298.625.190-02"));
+                .andExpect(MockMvcResultMatchers.jsonPath("documento").value(DadosSensiveisOfuscar.ofuscar("298.625.190-02")));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/propostas/10000"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());

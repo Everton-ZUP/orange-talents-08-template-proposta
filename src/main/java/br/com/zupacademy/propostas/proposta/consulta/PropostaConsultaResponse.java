@@ -2,6 +2,7 @@ package br.com.zupacademy.propostas.proposta.consulta;
 
 import br.com.zupacademy.propostas.proposta.EstadoProposta;
 import br.com.zupacademy.propostas.proposta.Proposta;
+import br.com.zupacademy.propostas.seguranca.DadosSensiveisOfuscar;
 
 import java.math.BigDecimal;
 
@@ -16,7 +17,7 @@ public class PropostaConsultaResponse {
     private String cartaoId;
 
     public PropostaConsultaResponse(Proposta proposta) {
-        this.documento = proposta.getDocumento();
+        this.documento = DadosSensiveisOfuscar.ofuscar(proposta.getDocumento());
         this.email = proposta.getEmail();
         this.nome = proposta.getNome();
         this.endereco = proposta.getEndereco();
