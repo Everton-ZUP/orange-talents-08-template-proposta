@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ResponsePostApiCartoes {
 
@@ -22,12 +23,12 @@ public class ResponsePostApiCartoes {
     private List<HashMap<String,Object>> carteiras;
     private List<HashMap<String,Object>> parcelas;
     private HashMap<String,Object> renegociacao;
-    private HashMap<String,Object> vencimento;
+    private Map<String,Object> vencimento;
 
     public ResponsePostApiCartoes(String id, LocalDateTime emitidoEm, String titular, String idProposta, BigDecimal limite,
                                   List<HashMap<String, Object>> bloqueios, List<HashMap<String, Object>> avisos,
                                   List<HashMap<String, Object>> carteiras, List<HashMap<String, Object>> parcelas,
-                                  HashMap<String, Object> renegociacao, HashMap<String, Object> vencimento) {
+                                  HashMap<String, Object> renegociacao, Map<String, Object> vencimento) {
         this.id = id;
         this.emitidoEm = emitidoEm;
         this.titular = titular;
@@ -42,12 +43,12 @@ public class ResponsePostApiCartoes {
     }
 
     public Cartao toCartao() {
-        Vencimento vencimento = null;
+        Vencimento venc = null;
         if (!this.vencimento.isEmpty() && this.vencimento != null ){
-             vencimento = new Vencimento(this.vencimento.get("id").toString(),
+             venc = new Vencimento(this.vencimento.get("id").toString(),
                     Integer.parseInt(this.vencimento.get("dia").toString()),
                     LocalDateTime.parse(this.vencimento.get("dataDeCriacao").toString()));
         }
-        return new Cartao(id,emitidoEm,titular,null,limite,bloqueios,avisos,parcelas,renegociacao,vencimento);
+        return new Cartao(id,emitidoEm,titular,null,limite,bloqueios,avisos,parcelas,renegociacao,venc);
     }
 }

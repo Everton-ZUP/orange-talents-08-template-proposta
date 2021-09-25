@@ -29,7 +29,7 @@ public class AssociarCartao {
     private MeterRegistry registry;
 
     @Scheduled(fixedRateString = "${associar.cartao.tempo.fixo}")
-    private void tentativaDeAssociarCartoes(){
+    public void tentativaDeAssociarCartoes(){
 
         List<Proposta> listaPropostas = propostaRepository.findAllByEstadoAndCartaoIsNull(EstadoProposta.ELEGIVEL);
 

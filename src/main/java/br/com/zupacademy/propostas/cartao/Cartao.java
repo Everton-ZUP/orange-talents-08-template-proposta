@@ -146,7 +146,7 @@ public class Cartao {
     }
 
     public boolean cartaoBloqueado() {
-        return bloqueio != null;
+        return bloqueio != null || this.status == StatusCartao.BLOQUEADO;
     }
 
     public List<Biometria> getBiometrias() {
@@ -188,5 +188,9 @@ public class Cartao {
             if (carteira.getTipoCarteira().equals(tipo)) verificador = true;
         }
         return verificador;
+    }
+
+    public void setBloqueio(BloqueioCartao bloqueio) {
+        this.bloqueio = bloqueio;
     }
 }

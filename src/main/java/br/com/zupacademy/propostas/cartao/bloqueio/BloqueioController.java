@@ -30,20 +30,16 @@ public class BloqueioController {
     @Autowired
     private MeterRegistry registry;
 
+
     @PostMapping   @ResponseStatus(HttpStatus.OK)  @Transactional
     @RequestMapping("/cartoes/{id}/bloqueios")
-    public String bloquearCartao(@PathVariable("id") String numCartao, HttpServletRequest request, @AuthenticationPrincipal Jwt token){
+    public String bloquearCartao(@PathVariable("id") String numCartao, HttpServletRequest request){
 
         Cartao cartao = cartaoRepository.findById(numCartao).orElseThrow(()->{
                     logger.warn("cartão informado na url não encontrado");
                     return new ResponseStatusException(HttpStatus.NOT_FOUND,"cartão não existe");
                 }
         );
-
-        if (!cartao.getProposta().getDocumento().equals(token.getClaims().get("documento"))){
-            logger.warn("Documento não pertence ao usuario que solicitou "+cartao.getProposta().getDocumento()+" != "+token.getClaims().get("documento"));
-            throw new ErroRegraDeNegocio("Este cartão não pertence ao usuário logado","cartão", numCartao);
-        }
 
         if (cartao.cartaoBloqueado()){
             logger.warn("Cartão "+ DadosSensiveisOfuscar.ofuscar(cartao.getNumeroCartao())+"já está bloqueado");

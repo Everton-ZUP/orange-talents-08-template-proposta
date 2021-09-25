@@ -1,6 +1,7 @@
 package br.com.zupacademy.propostas;
 
 import br.com.zupacademy.propostas.cartao.ApiCartoes;
+import br.com.zupacademy.propostas.cartao.AssociarCartao;
 import br.com.zupacademy.propostas.cartao.Cartao;
 import br.com.zupacademy.propostas.cartao.CartaoRepository;
 import br.com.zupacademy.propostas.cartao.bloqueio.AvisoSistemaLegadoBloqueioCartao;
@@ -47,11 +48,8 @@ public class TestPrincipal {
     protected ApiAvaliacaoFinanceira apiAvaliacaoFinanceira;
     @MockBean
     protected ApiCartoes apiCartoes;
-    @MockBean
+    @Autowired
     protected AvisoSistemaLegadoBloqueioCartao avisoSistemaLegadoBloqueioCartao;
-
-    @Mock
-    protected Jwt jwt;
 
 
     protected Cartao criaCartaoSucesso(String numeroCartao) {
