@@ -68,37 +68,41 @@ public class PropostaController {
 
                 proposta = propostaRepository.save(proposta);
 
-                HashMap<String,String> formApi = new HashMap<>();
-                formApi.put("documento",proposta.getDocumento());
-                formApi.put("nome",proposta.getNome());
-                formApi.put("idProposta",proposta.getId().toString());
-
-                ResponseAvaliacaoFinanceira retorno = null;
-                try {
-                    retorno = apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(formApi);
-                    meterRegistry.counter("propostas-criadas-elegiveis").increment();
-                }catch (FeignException feignException){
-                    if (feignException.contentUTF8().isEmpty()){
-                        logger.error("Resposta da API de avaliação financeira retornou com erro"
-                                +feignException.getCause().toString());
-                    }else{
-                        try {
-                            retorno = new ObjectMapper().readValue(feignException.contentUTF8(),ResponseAvaliacaoFinanceira.class);
-                        } catch (JsonProcessingException e) {
-                            logger.error("Erro ao tentar transformar corpo do retorno da API de avaliação financeira em um "
-                            +ResponseAvaliacaoFinanceira.class.getSimpleName()+" "+e.getCause().toString());
-                        }
-                        meterRegistry.counter("propostas-criadas-nao-elegiveis").increment();
-                    }
-                }
+                ResponseAvaliacaoFinanceira retorno = getRespostaAvaliacaoFinanceira(proposta);
 
                 proposta.setEstado(retorno.getStatusProposta());
-                proposta = propostaRepository.save(proposta);
-                meterRegistry.counter("propostas-criadas").increment();
-                URI location = uri.path("/propostas/{id}").build(proposta.getId());
-                logger.info("Proposta Criada com sucesso! "+
-                        DadosSensiveisOfuscar.ofuscar(proposta.getDocumento()));
-                return ResponseEntity.created(location).build();
+                    proposta = propostaRepository.save(proposta);
+                    meterRegistry.counter("propostas-criadas").increment();
+                    URI location = uri.path("/propostas/{id}").build(proposta.getId());
+                    logger.info("Proposta Criada com sucesso! "+DadosSensiveisOfuscar.ofuscar(proposta.getDocumento()));
+                    return ResponseEntity.created(location).build();
         });
+    }
+
+    private ResponseAvaliacaoFinanceira getRespostaAvaliacaoFinanceira(Proposta proposta) {
+        HashMap<String,String> formApi = new HashMap<>();
+        formApi.put("documento", proposta.getDocumento());
+        formApi.put("nome", proposta.getNome());
+        formApi.put("idProposta", proposta.getId().toString());
+
+        ResponseAvaliacaoFinanceira retorno = null;
+        try {
+            retorno = apiAvaliacaoFinanceira.fazerAvaliacaoFinaceira(formApi);
+            meterRegistry.counter("propostas-criadas-elegiveis").increment();
+        }catch (FeignException feignException){
+            if (feignException.contentUTF8().isEmpty()){
+                logger.error("Resposta da API de avaliação financeira retornou com erro"
+                        +feignException.getCause().toString());
+            }else{
+                try {
+                    retorno = new ObjectMapper().readValue(feignException.contentUTF8(),ResponseAvaliacaoFinanceira.class);
+                } catch (JsonProcessingException e) {
+                    logger.error("Erro ao tentar transformar corpo do retorno da API de avaliação financeira em um "
+                    +ResponseAvaliacaoFinanceira.class.getSimpleName()+" "+e.getCause().toString());
+                }
+                meterRegistry.counter("propostas-criadas-nao-elegiveis").increment();
+            }
+        }
+        return retorno;
     }
 }

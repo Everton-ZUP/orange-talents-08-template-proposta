@@ -29,31 +29,35 @@ public class AssociarCartao {
     private MeterRegistry registry;
 
     @Scheduled(fixedRateString = "${associar.cartao.tempo.fixo}")
-    public void tentativaDeAssociarCartoes(){
+    public void tentativaDeAssociarCartoes() {
 
-        List<Proposta> listaPropostas = propostaRepository.findAllByEstadoAndCartaoIsNull(EstadoProposta.ELEGIVEL);
+        while (true){
+            List<Proposta> listaPropostas = propostaRepository.findTop50ByEstadoAndCartaoIsNull(EstadoProposta.ELEGIVEL);
+            if (listaPropostas.isEmpty()){
+                return;
+            }
+            listaPropostas.forEach(proposta -> {
+                registry.timer("tempo_associar_cartao_proposta").record(() -> {
+                    HashMap<String, String> dadosRequisicao = new HashMap<>();
+                    dadosRequisicao.put("documento", proposta.getDocumento());
+                    dadosRequisicao.put("nome", proposta.getNome());
+                    dadosRequisicao.put("idProposta", proposta.getId().toString());
 
-        listaPropostas.forEach(proposta -> {
-            registry.timer("tempo_associar_cartao_proposta").record(()->{
-                HashMap<String,String> dadosRequisicao = new HashMap<>();
-                dadosRequisicao.put("documento",proposta.getDocumento());
-                dadosRequisicao.put("nome",proposta.getNome());
-                dadosRequisicao.put("idProposta",proposta.getId().toString());
+                    try {
+                        ResponsePostApiCartoes respApiCartoes = apiCartoes.associarCartao(dadosRequisicao);
+                        Cartao cartao = respApiCartoes.toCartao();
+                        proposta.setCartao(cartao);
+                        propostaRepository.save(proposta);
+                        logger.info("Cartão associado com sucesso para proposta " + proposta.getId().toString());
+                        registry.counter("associar_cartao_proposta_sucesso").increment();
+                    } catch (FeignException exception) {
+                        logger.error("Erro na resposta da api de cartões idProposta:" + proposta.getId().toString());
+                        registry.counter("associar_cartao_proposta_falha").increment();
+                    }
+                });
 
-                try{
-                    ResponsePostApiCartoes respApiCartoes = apiCartoes.associarCartao(dadosRequisicao);
-                    Cartao cartao = respApiCartoes.toCartao();
-                    proposta.setCartao(cartao);
-                    propostaRepository.save(proposta);
-                    logger.info("Cartão associado com sucesso para proposta "+proposta.getId().toString());
-                    registry.counter("associar_cartao_proposta_sucesso").increment();
-                }catch (FeignException exception){
-                    logger.error("Erro na resposta da api de cartões idProposta:"+proposta.getId().toString());
-                    registry.counter("associar_cartao_proposta_falha").increment();
-                }
             });
-
-        });
+        }
     }
 
 }

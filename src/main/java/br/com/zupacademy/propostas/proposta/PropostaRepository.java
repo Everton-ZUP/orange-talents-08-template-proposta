@@ -7,9 +7,7 @@ import java.util.Map;
 
 public interface PropostaRepository extends JpaRepository<Proposta,Long> {
 
-   Proposta findByDocumento(String s);
-
-   List<Proposta> findAllByEstado(EstadoProposta estado);
-
-   List<Proposta> findAllByEstadoAndCartaoIsNull(EstadoProposta estado);
+    Proposta findByDocumento(String s);
+    List<Proposta> findAllByEstado(EstadoProposta estado);
+    List<Proposta> findTop50ByEstadoAndCartaoIsNull(EstadoProposta elegivel);
 }

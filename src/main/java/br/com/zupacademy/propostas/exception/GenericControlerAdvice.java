@@ -61,6 +61,7 @@ public class GenericControlerAdvice {
     public ReturnError validaConstrucaoJson(HttpMessageNotReadableException exception){
         ReturnError returnError = new ReturnError();
         returnError.addErrorField("","", exception.getLocalizedMessage(),"",HttpStatus.BAD_REQUEST.toString());
+        logger.error(exception.getMessage(),exception.getCause());
         return returnError;
     }
 
