@@ -28,7 +28,7 @@ public class AssociarCartao {
     @Autowired
     private MeterRegistry registry;
 
-    @Scheduled(fixedRateString = "${associar.cartao.tempo.fixo}")
+    @Scheduled(fixedDelayString = "${associar.cartao.tempo.fixo}")
     public void tentativaDeAssociarCartoes() {
 
         while (true){

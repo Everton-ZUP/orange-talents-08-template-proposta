@@ -29,7 +29,7 @@ public class AvisoSistemaLegadoBloqueioCartao {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Scheduled(fixedRateString = "${bloquear.cartao.tempo.fixo}")
+    @Scheduled(fixedDelayString = "${bloquear.cartao.tempo.fixo}")
     public void avisarSistemaLegado(){
         List<Cartao> cartoesParaSeremAtualizados = cartaoRepository.buscaCartoesBloqueadosComStatusDesatualizado(StatusCartao.BLOQUEADO);
 
